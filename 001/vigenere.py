@@ -24,11 +24,11 @@ def encrypt_vigenere(plaintext, keyword):
     return ciphertext
 
 
-def decrypt_vigenere(plaintext, keyword):
-    ciphertext = ''
-    for i in range(len(plaintext)):
+def decrypt_vigenere(ciphertext, keyword):
+    plaintext = ''
+    for i in range(len(ciphertext)):
         j = i % len(keyword)
-        f = ord(plaintext[i])
+        f = ord(ciphertext[i])
         if 64 < f < 91:
             upp = 1
         else:
@@ -45,6 +45,6 @@ def decrypt_vigenere(plaintext, keyword):
             f += 26
         if f > 122:
             f -= 26
-        ciphertext += chr(f)
+        plaintext += chr(f)
 
-    return ciphertext
+    return plaintext
