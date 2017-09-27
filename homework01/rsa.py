@@ -2,6 +2,16 @@ import random
 
 
 def is_prime(n):
+    """
+    Tests to see if a number is prime.
+
+    >>> is_prime(2)
+    True
+    >>> is_prime(11)
+    True
+    >>> is_prime(8)
+    False
+    """
     if (n == 2) or (n == 3) or (n == 5):
         return True
     elif (n < 7) or (n % 2 == 0) or (n % 3 == 0):
@@ -33,7 +43,10 @@ def sqrt(n):
 def gcd(a, b):
     """
     Euclid's algorithm for determining the greatest common divisor.
+
+    >>> gcd(12, 15)
     3
+    >>> gcd(3, 7)
     1
     """
     while a != b:
@@ -49,11 +62,11 @@ def multiplicative_inverse(e, phi):
     Euclid's extended algorithm for finding the multiplicative
     inverse of two numbers.
 
+    >>> multiplicative_inverse(7, 40)
     23
     """
     i = 0
-    a = []
-    a.append([0, 0, 0, 0, 0])
+    a = [[0, 0, 0, 0, 0]]
     if e > phi:
         a[0][0] = e
         a[0][1] = phi
@@ -81,9 +94,7 @@ def generate_keypair(p, q):
         raise ValueError('Both numbers must be prime.')
     elif p == q:
         raise ValueError('p and q cannot be equal')
-
     n = p * q
-
     phi = (p - 1) * (q - 1)
 
     # Choose an integer e such that e and phi(n) are coprime
