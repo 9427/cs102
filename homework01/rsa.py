@@ -7,29 +7,38 @@ def is_prime(n):
 
     >>> is_prime(2)
     True
-    >>> is_prime(11)
+    >>> is_prime(3)
     True
+    >>> is_prime(4)
+    False
+    >>> is_prime(5)
+    True
+    >>> is_prime(6)
+    False
+    >>> is_prime(25)
+    False
     >>> is_prime(8)
     False
+    >>> is_prime(49)
+    False
+    >>> is_prime(1111)
+    False
     """
-    if (n == 2) or (n == 3) or (n == 5):
+    if (n == 2) or (n == 3):
         return True
-    elif (n < 7) or (n % 2 == 0) or (n % 3 == 0):
+    elif (n < 5) or (n % 2 == 0) or (n % 3 == 0):
         return False
     i = 5
     f = 0
-    if ((n - 1) % 6 == 0) or ((n + 1) % 6 == 0):
-        while i <= sqrt(n):
-            if n % i == 0:
-                return False
-            if f == 0:
-                i += 2
-                f = 1
-            else:
-                i += 4
-                f = 0
-    else:
-        return False
+    while i <= sqrt(n):
+        if n % i == 0:
+            return False
+        if f == 0:
+            i += 2
+            f = 1
+        else:
+            i += 4
+            f = 0
     return True
 
 
