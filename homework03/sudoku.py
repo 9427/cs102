@@ -28,11 +28,11 @@ def group(values, n):
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
     c = 0
-    a = [[]]
+    a = []
     while values:
-        for i in range(0,n):
-            a[c].append(values.pop(0))
         a.append([])
+        for i in range(0, n):
+            a[c].append(values.pop(0))
         c += 1
     return a
 
@@ -62,7 +62,7 @@ def get_col(values, pos):
     ['3', '6', '9']
     """
     a = []
-    for i in range(9):
+    #for i in range(9):
     #    a.append(values[i][???])
     return a
 
@@ -84,9 +84,9 @@ def find_empty_positions(grid):
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if grid[i][j] == '.':
+    #for i in range(len(grid)):
+    #    for j in range(len(grid)):
+    #        if grid[i][j] == '.':
             #    return ???
     pass
 
