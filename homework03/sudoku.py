@@ -47,8 +47,8 @@ def get_row(values, pos):
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    #return values[???]
-
+    r, c = pos
+    return values[r]
 
 
 def get_col(values, pos):
@@ -62,8 +62,9 @@ def get_col(values, pos):
     ['3', '6', '9']
     """
     a = []
-    #for i in range(9):
-    #    a.append(values[i][???])
+    r, c = pos
+    for i in range(len(values[0])):
+        a.append(values[i][c])
     return a
 
 
