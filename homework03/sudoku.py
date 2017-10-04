@@ -1,3 +1,5 @@
+import math
+
 def read_sudoku(filename):
     """ Прочитать Судоку из указанного файла """
     digits = [c for c in open(filename).read() if c in '123456789.']
@@ -69,10 +71,30 @@ def get_col(values, pos):
 
 
 def get_block(values, pos):
-    """ Возвращает все значения из квадрата, в который попадает позиция pos """
-    # // 3
-
-    pass
+    """ Возвращает все значения из квадрата, в который попадает позиция pos
+    >>> get_block([['1', '2', '3', '4'], ['5', '6', '7', '8'], ['8', '7', '6', '5'], ['4', '3', '2', '1']], (1,1))
+    ['1', '2', '5', '6']
+    >>> get_block([['1', '2', '3', '4'], ['5', '6', '7', '8'], ['8', '7', '6', '5'], ['4', '3', '2', '1']], (1,2))
+    ['3', '4', '7', '8']
+    >>> get_block([['1', '2', '3', '4'], ['5', '6', '7', '8'], ['8', '7', '6', '5'], ['4', '3', '2', '1']], (3,1))
+    ['8', '7', '4', '3']
+    >>> get_block([['1', '2', '3', '4'], ['5', '6', '7', '8'], ['8', '7', '6', '5'], ['4', '3', '2', '1']], (3,3))
+    ['6', '5', '2', '1']
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> get_block(grid, (0, 1))
+    ['5', '3', '.', '6', '.', '.', '.', '9', '8']
+    >>> get_block(grid, (4, 7))
+    ['.', '.', '3', '.', '.', '1', '.', '.', '6']
+    >>> get_block(grid, (8, 8))
+    ['2', '8', '.', '.', '.', '5', '.', '7', '9']
+    """
+    a = []
+    n = round(math.sqrt(len(values[0])))
+    r, c = pos
+    for i in range(((r // n) * n), ((r // n) * n + n)):
+        for j in range(((c // n) * n), ((c // n) * n + n)):
+            a.append(values[i][j])
+    return a
 
 
 def find_empty_positions(grid):
@@ -86,7 +108,7 @@ def find_empty_positions(grid):
     (2, 0)
     """
     for i in range(len(grid)):
-        for j in range(len(grid)):
+        for j in range(len(grid[0])):
             if grid[i][j] == '.':
                 pos = i, j
     return pos
@@ -94,6 +116,7 @@ def find_empty_positions(grid):
 
 def find_possible_values(grid, pos):
     """ Вернуть все возможные значения для указанной позиции """
+
     pass
 
 
