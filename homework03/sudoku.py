@@ -1,11 +1,10 @@
 import math
 
+
 def read_sudoku(filename):
     """ Прочитать Судоку из указанного файла """
     digits = [c for c in open(filename).read() if c in '123456789.']
     grid = group(digits, 9)
-    a=99
-    a+=0
     return grid
 
 
@@ -115,9 +114,34 @@ def find_empty_positions(grid):
 
 
 def find_possible_values(grid, pos):
-    """ Вернуть все возможные значения для указанной позиции """
+    """ Вернуть все возможные значения для указанной позиции
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> values = find_possible_values(grid, (0,2))
+    >>> set(values) == {'1', '2', '4'}
+    True
+    >>> values = find_possible_values(grid, (4,7))
+    >>> set(values) == {'2', '5', '9'}
+    True
+    """
+    ans = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    a = get_block(grid, pos)
+    ans = fpv_chk(a, ans)
+    a = get_col(grid, pos)
+    ans = fpv_chk(a, ans)
+    a = get_row(grid, pos)
+    ans = fpv_chk(a, ans)
+    a = []
+    for i in range(9):
+        if ans[i] == 1:
+            a.append(chr(i + 49))
+    return a
 
-    pass
+
+def fpv_chk(a, ans):
+    for i in range(len(a)):
+        if a[i] != '.':
+            ans[ord(a[i]) - 49] = 0
+    return ans
 
 
 def solve(grid):
