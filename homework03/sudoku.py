@@ -153,11 +153,24 @@ def solve(grid):
             3.1. Поместить это значение на эту позицию
             3.2. Продолжить решать оставшуюся часть пазла
     """
+    a = find_possible_values(grid, find_empty_positions(grid))
     pass
 
 
 def check_solution(solution):
     """ Если решение solution верно, то вернуть True, в противном случае False """
+    num = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+    chk = True
+    for i in range(len(solution)):
+        for j in range(len(solution)):
+            pos = i, j
+            if set(get_block(solution, pos)) != num:
+                chk = False
+            if set(get_row(solution, pos)) != num:
+                chk = False
+            if set(get_col(solution, pos)) != num:
+                chk = False
+    return chk
     pass
 
 
