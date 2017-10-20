@@ -203,13 +203,16 @@ def check_solution(solution):
 
 def generate_sudoku(n):
     """ Генерация судоку заполненного на N элементов
-    >>> check_solution(solve(generate_sudoku(45)))
+    >>> check_solution(solve(generate_sudoku(1)))
     True
     """
     grid = rand_solve(read_sudoku('puzzle_empty.txt'))
     for i in range(81 - n):
         r = random.randrange(9)
         c = random.randrange(9)
+        while grid[r][c] == '.':
+            r = random.randrange(9)
+            c = random.randrange(9)
         grid[r][c] = '.'
     return grid
 
