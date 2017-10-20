@@ -146,6 +146,7 @@ def find_possible_values(grid, pos):
 
 
 def fpv_chk(a, ans):
+    """ Вспомогательная функция поиска возможных значений """
     for i in range(len(a)):
         if a[i] != '.':
             ans[ord(a[i]) - 49] = 0
@@ -154,12 +155,6 @@ def fpv_chk(a, ans):
 
 def solve(grid):
     """ Решение пазла, заданного в grid
-        Как решать Судоку?
-        1. Найти свободную позицию
-        2. Найти все возможные значения, которые могут находиться на этой позиции
-        3. Для каждого возможного значения:
-            3.1. Поместить это значение на эту позицию
-            3.2. Продолжить решать оставшуюся часть пазла
     >>> grid = read_sudoku('puzzle1.txt')
     >>> check_solution(solve(grid))
     True
@@ -171,31 +166,28 @@ def solve(grid):
         return False
     a = find_possible_values(grid, pos)
     if not a:
-        #print('beep')
         return False
     r, c = pos
-    #print(a)
     while a:
         grid[r][c] = a.pop(0)
-        #display(grid)
         grid_c = copy.deepcopy(grid)
-        grid_s = solve(grid_c)
-        if grid_s:
-            return grid_s
+        grid_c = solve(grid_c)
+        if grid_c:
+            return grid_c
     return False
 
 
-def check_solution(solution):
-    """ Если решение solution верно, то вернуть True, в противном случае False """
+def check_solution(grid):
+    """ Если решение grid верно, то вернуть True, в противном случае False """
     num = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
     for i in range(9):
         for j in range(9):
             pos = i, j
-            if set(get_block(solution, pos)) != num:
+            if set(get_block(grid, pos)) != num:
                 return False
-            if set(get_row(solution, pos)) != num:
+            if set(get_row(grid, pos)) != num:
                 return False
-            if set(get_col(solution, pos)) != num:
+            if set(get_col(grid, pos)) != num:
                 return False
     return True
     pass
@@ -244,7 +236,7 @@ def rand_solve(grid):
 
 if __name__ == '__main__':
     for fname in ['puzzle1.txt', 'puzzle2.txt', 'puzzle3.txt']:
-        grid = read_sudoku(fname)
-        display(grid)
-        solution = solve(grid)
+        puzzle = read_sudoku(fname)
+        display(puzzle)
+        solution = solve(puzzle)
         display(solution)
