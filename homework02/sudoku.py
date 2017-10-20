@@ -178,7 +178,7 @@ def generate_sudoku(n):
     #>>> check_solution(solve(generate_sudoku(45)))
     #True
     """
-    grid = rand_solve(read_sudoku('puzzle_empty.txt'))
+    grid = rand_solve([['.'] * 9 for i in range(9)])
     for i in range(81 - n):
         r = random.randrange(9)
         c = random.randrange(9)
