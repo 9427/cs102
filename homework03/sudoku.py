@@ -1,4 +1,6 @@
+import copy
 import math
+import random
 
 
 def read_sudoku(filename):
@@ -105,11 +107,15 @@ def find_empty_positions(grid):
     (1, 1)
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
+    >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9']])
+    False
     """
+    pos = False
     for i in range(len(grid)):
         for j in range(len(grid[0])):
             if grid[i][j] == '.':
                 pos = i, j
+                return pos
     return pos
 
 
@@ -123,6 +129,8 @@ def find_possible_values(grid, pos):
     >>> set(values) == {'2', '5', '9'}
     True
     """
+    r, c = pos
+    grid[r][c] = '.'
     ans = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     a = get_block(grid, pos)
     ans = fpv_chk(a, ans)
@@ -145,33 +153,90 @@ def fpv_chk(a, ans):
 
 
 def solve(grid):
-    """ Решение пазла, заданного в grid """
-    """ Как решать Судоку?
+    """ Решение пазла, заданного в grid
+        Как решать Судоку?
         1. Найти свободную позицию
         2. Найти все возможные значения, которые могут находиться на этой позиции
         3. Для каждого возможного значения:
             3.1. Поместить это значение на эту позицию
             3.2. Продолжить решать оставшуюся часть пазла
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> check_solution(solve(grid))
+    True
     """
-    a = find_possible_values(grid, find_empty_positions(grid))
-    pass
+    if check_solution(grid):
+        return grid
+    pos = find_empty_positions(grid)
+    if not pos:
+        return False
+    a = find_possible_values(grid, pos)
+    if not a:
+        #print('beep')
+        return False
+    r, c = pos
+    #print(a)
+    while a:
+        grid[r][c] = a.pop(0)
+        #display(grid)
+        grid_c = copy.deepcopy(grid)
+        grid_s = solve(grid_c)
+        if grid_s:
+            return grid_s
+    return False
 
 
 def check_solution(solution):
     """ Если решение solution верно, то вернуть True, в противном случае False """
     num = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
-    chk = True
-    for i in range(len(solution)):
-        for j in range(len(solution)):
+    for i in range(9):
+        for j in range(9):
             pos = i, j
             if set(get_block(solution, pos)) != num:
-                chk = False
+                return False
             if set(get_row(solution, pos)) != num:
-                chk = False
+                return False
             if set(get_col(solution, pos)) != num:
-                chk = False
-    return chk
+                return False
+    return True
     pass
+
+
+def generate_sudoku(n):
+    """ Генерация судоку заполненного на N элементов
+    >>> check_solution(solve(generate_sudoku(45)))
+    True
+    """
+    grid = rand_solve(read_sudoku('puzzle_empty.txt'))
+    for i in range(81 - n):
+        r = random.randrange(9)
+        c = random.randrange(9)
+        grid[r][c] = '.'
+    return grid
+
+
+def rand_solve(grid):
+    """ Функция solve(), использующая случайное подходящее значение вместо наименьшего при их переборе
+    Необходима для генерации судоку
+    >>> grid = read_sudoku('puzzle1.txt')
+    >>> check_solution(solve(grid))
+    True
+    """
+    if check_solution(grid):
+        return grid
+    pos = find_empty_positions(grid)
+    if not pos:
+        return False
+    a = find_possible_values(grid, pos)
+    if not a:
+        return False
+    r, c = pos
+    while a:
+        grid[r][c] = a.pop(random.randrange(len(a)))
+        grid_c = copy.deepcopy(grid)
+        grid_s = solve(grid_c)
+        if grid_s:
+            return grid_s
+    return False
 
 
 if __name__ == '__main__':
