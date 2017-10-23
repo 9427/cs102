@@ -24,20 +24,8 @@ def display(values):
 def group(values, n):
     """
     Сгруппировать значения values в список, состоящий из списков по n элементов
-
-    >>> group([1,2,3,4], 2)
-    [[1, 2], [3, 4]]
-    >>> group([1,2,3,4,5,6,7,8,9], 3)
-    [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    c = 0
-    a = []
-    while values:
-        a.append([])
-        for i in range(0, n):
-            a[c].append(values.pop(0))
-        c += 1
-    return a
+    return [[values[i+j*n] for i in range(n)] for j in range(n)]
 
 
 def get_row(values, pos):
@@ -66,9 +54,7 @@ def get_col(values, pos):
     """
     a = []
     r, c = pos
-    for i in range(len(values[0])):
-        a.append(values[i][c])
-    return a
+    return [values[i][c] for i in range(len(values[0]))]
 
 
 def get_block(values, pos):
@@ -92,10 +78,7 @@ def get_block(values, pos):
     a = []
     n = round(math.sqrt(len(values[0])))
     r, c = pos
-    for i in range(((r // n) * n), ((r // n) * n + n)):
-        for j in range(((c // n) * n), ((c // n) * n + n)):
-            a.append(values[i][j])
-    return a
+    return [values[i][j] for i in range(((r // n) * n), ((r // n) * n + n)) for j in range(((c // n) * n), ((c // n) * n + n))]
 
 
 def find_empty_positions(grid):
@@ -194,7 +177,7 @@ def rand_solve(grid):
     Необходима для генерации судоку
 
     >>> grid = read_sudoku('puzzle1.txt')
-    >>> check_solution(solve(grid))
+    >>> check_solution(rand_solve(grid))
     True
     """
     if check_solution(grid):
