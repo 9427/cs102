@@ -52,7 +52,6 @@ def get_col(values, pos):
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    a = []
     r, c = pos
     return [values[i][c] for i in range(len(values[0]))]
 
@@ -75,7 +74,6 @@ def get_block(values, pos):
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    a = []
     n = round(math.sqrt(len(values[0])))
     r, c = pos
     return [values[i][j] for i in range(((r // n) * n), ((r // n) * n + n)) for j in range(((c // n) * n), ((c // n) * n + n))]
@@ -142,7 +140,7 @@ def solve(grid):
 
 def check_solution(grid):
     """ Если решение grid верно, то вернуть True, в противном случае False """
-    num = {str(i) for i in range(1, 10)}
+    num = set('123456789')
     for i in range(9):
         for j in range(9):
             pos = i, j
@@ -153,13 +151,29 @@ def check_solution(grid):
             if set(get_col(grid, pos)) != num:
                 return False
     return True
-    pass
 
 
 def generate_sudoku(n):
     """ Генерация судоку заполненного на N элементов
-    #>>> check_solution(solve(generate_sudoku(45)))
-    #True
+
+    >>> grid = generate_sudoku(40)
+    >>> sum(1 for row in grid for e in row if e == '.')
+    41
+    >>> solution = solve(grid)
+    >>> check_solution(solution)
+    True
+    >>> grid = generate_sudoku(1000)
+    >>> sum(1 for row in grid for e in row if e == '.')
+    0
+    >>> solution = solve(grid)
+    >>> check_solution(solution)
+    True
+    >>> grid = generate_sudoku(0)
+    >>> sum(1 for row in grid for e in row if e == '.')
+    81
+    >>> solution = solve(grid)
+    >>> check_solution(solution)
+    True
     """
     grid = rand_solve([['.'] * 9 for i in range(9)])
     for i in range(81 - n):
