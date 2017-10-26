@@ -110,7 +110,7 @@ def find_possible_values(grid, pos):
     >>> set(values) == {'2', '5', '9'}
     True
     """
-    a = {str(i) for i in range(1, 10)} - set(get_col(grid, pos)) - set(get_block(grid, pos)) - set(get_row(grid, pos))
+    a = set('123456789') - set(get_col(grid, pos)) - set(get_block(grid, pos)) - set(get_row(grid, pos))
     return list(a)
 
 
