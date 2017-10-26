@@ -25,7 +25,7 @@ def group(values, n):
     """
     Сгруппировать значения values в список, состоящий из списков по n элементов
     """
-    return [[values[i+j*n] for i in range(n)] for j in range(n)]
+    return [[values[i + j * n] for i in range(n)] for j in range(n)]
 
 
 def get_row(values, pos):
@@ -38,8 +38,8 @@ def get_row(values, pos):
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    r, c = pos
-    return values[r]
+    row, col = pos
+    return values[row]
 
 
 def get_col(values, pos):
@@ -52,8 +52,8 @@ def get_col(values, pos):
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    r, c = pos
-    return [values[i][c] for i in range(len(values[0]))]
+    row, col = pos
+    return [values[i][col] for i in range(len(values[0]))]
 
 
 def get_block(values, pos):
@@ -74,9 +74,9 @@ def get_block(values, pos):
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    n = round(math.sqrt(len(values[0])))
-    r, c = pos
-    return [values[i][j] for i in range(((r // n) * n), ((r // n) * n + n)) for j in range(((c // n) * n), ((c // n) * n + n))]
+    root = round(math.sqrt(len(values[0])))
+    row, col = pos
+    return [values[i][j] for i in range(((row // root) * root), ((row // root) * root + root)) for j in range(((col // root) * root), ((col // root) * root + root))]
 
 
 def find_empty_positions(grid):
@@ -92,10 +92,10 @@ def find_empty_positions(grid):
     False
     """
     pos = False
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i][j] == '.':
-                pos = i, j
+    for row in range(len(grid)):
+        for col in range(len(grid[0])):
+            if grid[row][col] == '.':
+                pos = row, col
                 return pos
     return pos
 
@@ -110,8 +110,8 @@ def find_possible_values(grid, pos):
     >>> set(values) == {'2', '5', '9'}
     True
     """
-    a = set('123456789') - set(get_col(grid, pos)) - set(get_block(grid, pos)) - set(get_row(grid, pos))
-    return list(a)
+    values = set('123456789') - set(get_col(grid, pos)) - set(get_block(grid, pos)) - set(get_row(grid, pos))
+    return list(values)
 
 
 def solve(grid):
@@ -125,25 +125,25 @@ def solve(grid):
     pos = find_empty_positions(grid)
     if not pos:
         return False
-    a = find_possible_values(grid, pos)
-    if not a:
+    values = find_possible_values(grid, pos)
+    if not values:
         return False
-    r, c = pos
-    while a:
-        grid[r][c] = a.pop(0)
-        grid_c = copy.deepcopy(grid)
-        grid_c = solve(grid_c)
-        if grid_c:
-            return grid_c
+    row, col = pos
+    while values:
+        grid[row][col] = values.pop(0)
+        grid_solved = solve(grid)
+        if grid_solved:
+            return grid
+        grid[row][col] = '.'
     return False
 
 
 def check_solution(grid):
     """ Если решение grid верно, то вернуть True, в противном случае False """
     num = set('123456789')
-    for i in range(9):
-        for j in range(9):
-            pos = i, j
+    for row in range(9):
+        for col in range(9):
+            pos = row, col
             if set(get_block(grid, pos)) != num:
                 return False
             if set(get_row(grid, pos)) != num:
@@ -177,12 +177,12 @@ def generate_sudoku(n):
     """
     grid = rand_solve([['.'] * 9 for i in range(9)])
     for i in range(81 - n):
-        r = random.randrange(9)
-        c = random.randrange(9)
-        while grid[r][c] == '.':
-            r = random.randrange(9)
-            c = random.randrange(9)
-        grid[r][c] = '.'
+        row = random.randrange(9)
+        col = random.randrange(9)
+        while grid[row][col] == '.':
+            row = random.randrange(9)
+            col = random.randrange(9)
+        grid[row][col] = '.'
     return grid
 
 
@@ -199,16 +199,16 @@ def rand_solve(grid):
     pos = find_empty_positions(grid)
     if not pos:
         return False
-    a = find_possible_values(grid, pos)
-    if not a:
+    values = find_possible_values(grid, pos)
+    if not values:
         return False
-    r, c = pos
-    while a:
-        grid[r][c] = a.pop(random.randrange(len(a)))
-        grid_c = copy.deepcopy(grid)
-        grid_s = solve(grid_c)
-        if grid_s:
-            return grid_s
+    row, col = pos
+    while values:
+        grid[row][col] = values.pop(random.randrange(len(values)))
+        grid_solved = solve(grid)
+        if grid_solved:
+            return grid
+        grid[row][col] = '.'
     return False
 
 
