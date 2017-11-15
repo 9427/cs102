@@ -37,10 +37,7 @@ class GameOfLife:
         clock = pygame.time.Clock()
         pygame.display.set_caption('Game of Life')
         self.screen.fill(pygame.Color('white'))
-
-        # Создание списка клеток
-        # PUT YOUR CODE HERE
-
+        self.clist = self.cell_list()
         running = True
         while running:
             for event in pygame.event.get():
@@ -63,9 +60,10 @@ class GameOfLife:
         каждая клетка равновероятно может быть живой (1) или мертвой (0).
         :return: Список клеток, представленный в виде матрицы
         """
-        self.clist = []
-        # PUT YOUR CODE HERE
-        return self.clist
+        if randomize:
+            self.clist = [[random.randrange(2) for i in range(self.width // self.cell_size)] for j in range(self.height // self.cell_size)]
+            return self.clist
+
 
     def draw_cell_list(self, clist):
         """ Отображение списка клеток
