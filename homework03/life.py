@@ -79,7 +79,11 @@ class GameOfLife:
         :return: Одномерный список ячеек, смежных к ячейке cell
         """
         neighbours = []
-        # PUT YOUR CODE HERE
+        row, col = cell
+        for i in (-1, 2):
+            for j in (-1, 2):
+                if (0 <= row + i < self.height // self.cell_size) and (0 <= col + j < self.width // self.cell_size) and (row or col):
+                    neighbours.append(self.clist[row + i][col + j])
         return neighbours
 
     def update_cell_list(self, cell_list):
