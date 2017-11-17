@@ -25,11 +25,9 @@ class GameOfLife:
     def draw_grid(self):
         """ Отрисовать сетку """
         for x in range(0, self.width, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color('black'),
-                    (x, 0), (x, self.height))
+            pygame.draw.line(self.screen, pygame.Color('black'), (x, 0), (x, self.height))
         for y in range(0, self.height, self.cell_size):
-            pygame.draw.line(self.screen, pygame.Color('black'),
-                    (0, y), (self.width, y))
+            pygame.draw.line(self.screen, pygame.Color('black'), (0, y), (self.width, y))
 
     def run(self):
         """ Запустить игру """
@@ -45,10 +43,7 @@ class GameOfLife:
                     running = False
             self.draw_grid()
             self.draw_cell_list(self.clist)
-            # Отрисовка списка клеток
-            # Выполнение одного шага игры (обновление состояния ячеек)
-            # PUT YOUR CODE HERE
-
+            self.clist = self.update_cell_list(self.clist)
             pygame.display.flip()
             clock.tick(self.speed)
         pygame.quit()
@@ -63,6 +58,8 @@ class GameOfLife:
         if randomize:
             self.clist = [[random.randrange(2) for i in range(self.width // self.cell_size)] for j in range(self.height // self.cell_size)]
             return self.clist
+        else:
+            return [[0 for i in range(self.width // self.cell_size)] for j in range(self.height // self.cell_size)]
 
 
     def draw_cell_list(self, clist):
@@ -72,7 +69,7 @@ class GameOfLife:
         """
         for row in range(len(clist)):
             for col in range(len(clist[0])):
-                if clist[row][col]:
+                if clist[row][col] == 1:
                     pygame.draw.rect(self.screen, pygame.Color('green'),
                                      (self.cell_size * col + 1, self.cell_size * row + 1, self.cell_size - 1, self.cell_size - 1))
                 else:
@@ -89,9 +86,9 @@ class GameOfLife:
         """
         neighbours = []
         row, col = cell
-        for i in (-1, 2):
-            for j in (-1, 2):
-                if (0 <= row + i < self.height // self.cell_size) and (0 <= col + j < self.width // self.cell_size) and (row or col):
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if (0 <= row + i < self.height // self.cell_size) and (0 <= col + j < self.width // self.cell_size) and (i or j):
                     neighbours.append(self.clist[row + i][col + j])
         return neighbours
 
@@ -104,9 +101,22 @@ class GameOfLife:
         :param cell_list: Игровое поле, представленное в виде матрицы
         :return: Обновленное игровое поле
         """
-        new_clist = []
-        # PUT YOUR CODE HERE
-        return self.clist
+        new_clist = [[]]
+        old_clist = cell_list.copy()
+        for col in range(len(old_clist)):
+            for row in range(len(old_clist[0])):
+                if old_clist[col][row] == 1:
+                    if 1 < self.get_neighbours((col, row)).count(1) < 4:
+                        new_clist[col].append(1)
+                    else:
+                        new_clist[col].append(0)
+                elif self.get_neighbours((col, row)).count(1) == 3:
+                    new_clist[col].append(1)
+                else:
+                    new_clist[col].append(0)
+            new_clist.append([])
+        new_clist.pop(len(new_clist)-1)
+        return new_clist
 
 
 if __name__ == '__main__':
