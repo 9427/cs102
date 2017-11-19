@@ -23,6 +23,7 @@ class GameOfLife:
         # Скорость протекания игры
         self.speed = speed
 
+
     def draw_grid(self):
         """ Отрисовать сетку """
         for x in range(0, self.width, self.cell_size):
@@ -48,50 +49,92 @@ class GameOfLife:
                 if event.type == QUIT:
                     running = False
             self.draw_grid()
-
-            # Отрисовка списка клеток
-            # Выполнение одного шага игры (обновление состояния ячеек)
-            # PUT YOUR CODE HERE
-
+            self.draw_cell_list()
+            self.clist.update()
             pygame.display.flip()
             clock.tick(self.speed)
         pygame.quit()
 
 
+
+
+
 class Cell:
 
-    def __init__(self, row, col, state=False):
-        pass
+    def __init__(self, row, col, state):
+        self.row = row
+        self.col = col
+        self.state = state
 
     def is_alive(self):
-        pass
+        return self.state
 
 
 class CellList:
 
     def __init__(self, nrows, ncols, randomize=False):
-        pass
+        self.nrows = nrows
+        self.ncols = ncols
+        self.row = 0
+        self.col = 0
+        if randomize:
+            self.grid = [[Cell(i, j, random.randrange(2)) for i in range(self.nrows)] for j in range(self.ncols)]
+        else:
+            self.grid = [[Cell(i, j, random.randrange(2)) for i in range(self.nrows)] for j in range(self.ncols)]
 
     def get_neighbours(self, cell):
-        neighbours = []
-        # PUT YOUR CODE HERE
+        neighbours = 0
+        row, col = cell
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if (self.grid[row + i][col + j].is_alive()) and (i or j):
+                    neighbours += 1
         return neighbours
 
     def update(self):
-        new_clist = deepcopy(self)
-        # PUT YOUR CODE HERE
-        return self
+        new_clist = []
+        for row in range(self.nrows):
+            new_clist.append([])
+            for col in range(self.ncols):
+                if 1 < self.get_neighbours((row, col)) < 4 and self.grid[row][col].is_alive():
+                    new_clist.append(Cell(row, col, 1))
+                elif self.get_neighbours((row, col)) == 3 and not self.grid[row][col].is_alive():
+                    new_clist.append(Cell(row, col, 1))
+                else:
+                    new_clist.append(Cell(row, col, 0))
+        self.grid = new_clist
 
     def __iter__(self):
-        pass
+        return self
 
     def __next__(self):
-        pass
+        if self.col == self.ncols:
+            self.col = 0
+            self.row += 1
+        self.col += 1
+        if self.row == self.nrows:
+            raise StopIteration
+        return self.grid[0][0]
 
     def __str__(self):
-        pass
+        s = ''
+        for row in range(self.nrows):
+            for col in range(self.ncols):
+                if self.grid[row][col].state:
+                    s += '1 '
+                else:
+                    s += '0 '
+            s += '\n'
+        return s
 
     @classmethod
     def from_file(cls, filename):
-        pass
+        grid = []
+        with open(filename) as file:
+            for i, line in enumerate(file):
+                grid.append([Cell(i, j, int(c))
+                             for j, c in enumerate(line) if c in "01"])
+        clist = cls(len(grid), len(grid[0]), False)
+        clist.grid = grid
+        return clist
 
