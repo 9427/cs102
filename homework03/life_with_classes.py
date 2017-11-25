@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 import random
-from copy import deepcopy
 
 
 class GameOfLife:
@@ -22,6 +21,7 @@ class GameOfLife:
 
         # Скорость протекания игры
         self.speed = speed
+        # Создание списка клеток
         self.clist = CellList(self.cell_width, self.cell_height, True)
 
     def draw_grid(self):
@@ -39,10 +39,6 @@ class GameOfLife:
         clock = pygame.time.Clock()
         pygame.display.set_caption('Game of Life')
         self.screen.fill(pygame.Color('white'))
-
-        # Создание списка клеток
-        # PUT YOUR CODE HERE
-
         running = True
         while running:
             for event in pygame.event.get():
@@ -58,7 +54,6 @@ class GameOfLife:
     def draw_cell_list(self):
         for row in range(self.clist.nrows):
             for col in range(self.clist.ncols):
-                print(row, col)
                 a = row * self.cell_size + 1
                 b = col * self.cell_size + 1
                 c = self.cell_size - 1
@@ -73,8 +68,7 @@ class GameOfLife:
 
 class Cell:
 
-
-    def __init__(self, row, col, state = 0):
+    def __init__(self, row, col, state=0):
         self.row = row
         self.col = col
         self.state = state
@@ -86,7 +80,6 @@ class Cell:
 class CellList:
 
     def __init__(self, nrows, ncols, randomize=False):
-        print(nrows, ncols)
         self.nrows = nrows
         self.ncols = ncols
         self.row = 0
