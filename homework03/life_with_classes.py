@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class GameOfLife:
 
-    def __init__(self, width=640, height=480, cell_size=10, speed=10):
+    def __init__(self, width=640, height=480, cell_size=20, speed=1):
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -22,7 +22,7 @@ class GameOfLife:
 
         # Скорость протекания игры
         self.speed = speed
-        self. clist =CellList(10, 10, True)
+        self.clist = CellList(self.cell_width, self.cell_height, True)
 
     def draw_grid(self):
         """ Отрисовать сетку """
@@ -58,6 +58,7 @@ class GameOfLife:
     def draw_cell_list(self):
         for row in range(self.clist.nrows):
             for col in range(self.clist.ncols):
+                print(row, col)
                 a = row * self.cell_size + 1
                 b = col * self.cell_size + 1
                 c = self.cell_size - 1
@@ -85,14 +86,15 @@ class Cell:
 class CellList:
 
     def __init__(self, nrows, ncols, randomize=False):
+        print(nrows, ncols)
         self.nrows = nrows
         self.ncols = ncols
         self.row = 0
         self.col = 0
         if randomize:
-            self.grid = [[Cell(i, j, random.randrange(2)) for i in range(self.nrows)] for j in range(self.ncols)]
+            self.grid = [[Cell(i, j, random.randint(0, 1)) for i in range(self.ncols)] for j in range(self.nrows)]
         else:
-            self.grid = [[Cell(i, j, 0) for i in range(self.nrows)] for j in range(self.ncols)]
+            self.grid = [[Cell(i, j, 0) for i in range(self.ncols)] for j in range(self.nrows)]
 
     def get_neighbours(self, row, col):
         neighbours = 0
@@ -109,11 +111,11 @@ class CellList:
             new_clist.append([])
             for col in range(self.ncols):
                 if 1 < self.get_neighbours(row, col) < 4 and self.grid[row][col].is_alive():
-                    new_clist.append(Cell(row, col, 1))
+                    new_clist[row].append(Cell(row, col, 1))
                 elif self.get_neighbours(row, col) == 3 and not self.grid[row][col].is_alive():
-                    new_clist.append(Cell(row, col, 1))
+                    new_clist[row].append(Cell(row, col, 1))
                 else:
-                    new_clist.append(Cell(row, col, 0))
+                    new_clist[row].append(Cell(row, col, 0))
         self.grid = new_clist
 
     def __iter__(self):
