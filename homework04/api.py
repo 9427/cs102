@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-import plotly
 
 
 config = {
@@ -20,14 +19,14 @@ def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
     domain = "https://api.vk.com/method"
-    access_token =  "90a049040cc671c04346865864e510b8f6d7a062bfd02f5d2e4808774e0e11db4bf20bd04b286a3905e18"
-    user_id = 6209246
+    access_token = "fca60a3410223b4d5ba0bc5ac624f20e5d91e33639d397e9dc3ac7a37d412ef69a17b90a21e381f43efab"
+    user_id = 65000344
 
     query_params = {
         'domain': domain,
         'access_token': access_token,
         'user_id': user_id,
-        'fields': 'sex'
+        'fields': 'age'
     }
 
     query = "{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v=5.53".format(
@@ -89,11 +88,17 @@ def plotly_messages_freq(freq_list):
     :param freq_list: список дат и их частот
     """
     # PUT YOUR CODE HERE
-
+    pass
 
 def get_network(users_ids, as_edgelist=True):
     # PUT YOUR CODE HERE
+    pass
 
 
 def plot_graph(graph):
     # PUT YOUR CODE HERE
+    pass
+
+if __name__ == '__main__':
+    response = get("https://api.vk.com/method")
+    print(response.json())
