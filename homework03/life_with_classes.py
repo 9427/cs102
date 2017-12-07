@@ -89,13 +89,17 @@ class CellList:
         else:
             self.grid = [[Cell(i, j, 0) for i in range(self.ncols)] for j in range(self.nrows)]
 
-    def get_neighbours(self, row, col):
-        neighbours = 0
+    def get_neighbours(self, cell):
+        row = cell.row
+        col = cell.col
+        neighbours = []
         for i in range(-1, 2):
             for j in range(-1, 2):
-                if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
-                    if (self.grid[(row + i) % self.nrows][(col + j) % self.ncols].is_alive()) and (i or j):
-                        neighbours += 1
+                if i or j:
+                     if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
+                         neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
+                #    if (self.grid[(row + i) % self.nrows][(col + j) % self.ncols].is_alive()) and (i or j):
+                #        neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
         return neighbours
 
     def update(self):
@@ -103,9 +107,9 @@ class CellList:
         for row in range(self.nrows):
             new_clist.append([])
             for col in range(self.ncols):
-                if 1 < self.get_neighbours(row, col) < 4 and self.grid[row][col].is_alive():
+                if 1 < self.get_neighbours(Cell(row, col)) < 4 and self.grid[row][col].is_alive():
                     new_clist[row].append(Cell(row, col, 1))
-                elif self.get_neighbours(row, col) == 3 and not self.grid[row][col].is_alive():
+                elif self.get_neighbours(Cell(row, col)) == 3 and not self.grid[row][col].is_alive():
                     new_clist[row].append(Cell(row, col, 1))
                 else:
                     new_clist[row].append(Cell(row, col, 0))
@@ -139,13 +143,16 @@ class CellList:
         grid = []
         with open(filename) as file:
             for i, line in enumerate(file):
-                grid.append([Cell(i, j, int(c))
-                             for j, c in enumerate(line) if c in {'0', '1'}])
+                grid.append([Cell(i, j, int(c)) for j, c in enumerate(line) if c != '\n'])
         clist = cls(len(grid), len(grid[0]), False)
         clist.grid = grid
         return clist
 
 
 if __name__ == '__main__':
-    game = GameOfLife(640, 480, 20)
-    game.run()
+    list = CellList.from_file('grid.txt')
+    for i in range(len(list.grid)):
+        for j in range(len(list.grid[0])):
+            print(list.grid[i][j].state)
+    states = [cell.state for cell in list]
+    print(states)
