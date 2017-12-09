@@ -9,7 +9,7 @@ config = {
 }
 
 
-def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
+def get(url, params='', timeout=5, max_retries=5, backoff_factor=0.3):
     """ Выполнить GET-запрос
 
     :param url: адрес, на который необходимо выполнить запрос
@@ -18,15 +18,15 @@ def get(url, params={}, timeout=5, max_retries=5, backoff_factor=0.3):
     :param max_retries: максимальное число повторных запросов
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
-    domain = "https://api.vk.com/method"
-    access_token = "fca60a3410223b4d5ba0bc5ac624f20e5d91e33639d397e9dc3ac7a37d412ef69a17b90a21e381f43efab"
+    domain = url
+    access_token = "1a50908386e0872b73fc80fdc24150873718d01f0bed61bd45936a2968df0bb955784700d05a3f7856904"
     user_id = 65000344
 
     query_params = {
         'domain': domain,
         'access_token': access_token,
         'user_id': user_id,
-        'fields': 'age'
+        'fields': params
     }
 
     query = "{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v=5.53".format(
@@ -100,5 +100,6 @@ def plot_graph(graph):
     pass
 
 if __name__ == '__main__':
-    response = get("https://api.vk.com/method")
+    response = get("https://api.vk.com/method", params='bdate')
+    print(response)
     print(response.json())
