@@ -74,6 +74,7 @@ class Cell:
         self.state = state
 
     def is_alive(self):
+        print(self.state)
         return self.state
 
 
@@ -125,7 +126,7 @@ class CellList:
         self.col += 1
         if self.row == self.nrows:
             raise StopIteration
-        return self.grid[0][0]
+        return self.grid[self.row-1][self.col-1]
 
     def __str__(self):
         s = ''
@@ -151,8 +152,8 @@ class CellList:
 
 if __name__ == '__main__':
     list = CellList.from_file('grid.txt')
-    for i in range(len(list.grid)):
-        for j in range(len(list.grid[0])):
-            print(list.grid[i][j].state)
     states = [cell.state for cell in list]
     print(states)
+    for i in range(len(list.grid)):
+        for j in range(len(list.grid[0])):
+            print(list.grid[i][j].state, end=', ')
