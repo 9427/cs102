@@ -9,7 +9,7 @@ config = {
 }
 
 
-def get(url, params='', timeout=5, max_retries=5, backoff_factor=0.3):
+def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retries=5, backoff_factor=0.3):
     """ Выполнить GET-запрос
 
     :param url: адрес, на который необходимо выполнить запрос
@@ -20,13 +20,12 @@ def get(url, params='', timeout=5, max_retries=5, backoff_factor=0.3):
     """
     domain = url
     access_token = "1a50908386e0872b73fc80fdc24150873718d01f0bed61bd45936a2968df0bb955784700d05a3f7856904"
-    user_id = 65000344
 
     query_params = {
         'domain': domain,
         'access_token': access_token,
-        'user_id': user_id,
-        'fields': params
+        'user_id': params.user_id,
+        'fields': params.fields
     }
 
     query = "{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v=5.53".format(
@@ -44,8 +43,12 @@ def get_friends(user_id, fields):
     assert isinstance(user_id, int), "user_id must be positive integer"
     assert isinstance(fields, str), "fields must be string"
     assert user_id > 0, "user_id must be positive integer"
-    # PUT YOUR CODE HERE
-
+    params = {
+        'user_id': user_id,
+        'fields': fields
+    }
+    response = get("https://api.vk.com/method", params)
+    return response
 
 def age_predict(user_id):
     """ Наивный прогноз возраста по возрасту друзей
@@ -100,6 +103,6 @@ def plot_graph(graph):
     pass
 
 if __name__ == '__main__':
-    response = get("https://api.vk.com/method", params='bdate')
+    response = get_friends(65000344, 'bdate')
     print(response)
     print(response.json())
