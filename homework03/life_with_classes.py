@@ -5,7 +5,7 @@ import random
 
 class GameOfLife:
 
-    def __init__(self, width=640, height=480, cell_size=20, speed=1):
+    def __init__(self, width=640, height=480, cell_size=20, speed=2):
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -74,7 +74,6 @@ class Cell:
         self.state = state
 
     def is_alive(self):
-        print(self.state)
         return self.state
 
 
@@ -99,8 +98,6 @@ class CellList:
                 if i or j:
                      if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
                          neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
-                #    if (self.grid[(row + i) % self.nrows][(col + j) % self.ncols].is_alive()) and (i or j):
-                #        neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
         return neighbours
 
     def update(self):
@@ -108,13 +105,15 @@ class CellList:
         for row in range(self.nrows):
             new_clist.append([])
             for col in range(self.ncols):
-                if 1 < self.get_neighbours(Cell(row, col)) < 4 and self.grid[row][col].is_alive():
+                if 1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4 and self.grid[row][col].is_alive():
                     new_clist[row].append(Cell(row, col, 1))
-                elif self.get_neighbours(Cell(row, col)) == 3 and not self.grid[row][col].is_alive():
+                elif sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3 and not self.grid[row][col].is_alive():
                     new_clist[row].append(Cell(row, col, 1))
                 else:
                     new_clist[row].append(Cell(row, col, 0))
+        new_clist.pop(0)
         self.grid = new_clist
+        return self
 
     def __iter__(self):
         return self
@@ -151,9 +150,6 @@ class CellList:
 
 
 if __name__ == '__main__':
-    list = CellList.from_file('grid.txt')
-    states = [cell.state for cell in list]
-    print(states)
-    for i in range(len(list.grid)):
-        for j in range(len(list.grid[0])):
-            print(list.grid[i][j].state, end=', ')
+
+    game = GameOfLife()
+    game.run()
