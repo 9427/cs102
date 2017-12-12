@@ -19,13 +19,13 @@ def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retri
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
     domain = url
-    access_token = "1a50908386e0872b73fc80fdc24150873718d01f0bed61bd45936a2968df0bb955784700d05a3f7856904"
+    access_token = "7f470e9071b38b60d40465e4ad6c005cc945f2eb3908e5e395c431cd7197f4239acc67c95062267d4ca95"
 
     query_params = {
         'domain': domain,
         'access_token': access_token,
-        'user_id': params.user_id,
-        'fields': params.fields
+        'user_id': params['user_id'],
+        'fields': params['fields']
     }
 
     query = "{domain}/friends.get?access_token={access_token}&user_id={user_id}&fields={fields}&v=5.53".format(
