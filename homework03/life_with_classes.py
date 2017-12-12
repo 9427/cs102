@@ -105,13 +105,12 @@ class CellList:
         for row in range(self.nrows):
             new_clist.append([])
             for col in range(self.ncols):
-                if 1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4 and self.grid[row][col].is_alive():
-                    new_clist[row].append(Cell(row, col, 1))
-                elif sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3 and not self.grid[row][col].is_alive():
+                if ((1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4 and self.grid[row][col].is_alive())
+                or (sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3 and not self.grid[row][col].is_alive())):
                     new_clist[row].append(Cell(row, col, 1))
                 else:
                     new_clist[row].append(Cell(row, col, 0))
-        new_clist.pop(0)
+        #new_clist.pop(0)
         self.grid = new_clist
         return self
 
@@ -124,6 +123,8 @@ class CellList:
             self.row += 1
         self.col += 1
         if self.row == self.nrows:
+            self.row = 0
+            self.col = 0
             raise StopIteration
         return self.grid[self.row-1][self.col-1]
 
@@ -142,14 +143,18 @@ class CellList:
     def from_file(cls, filename):
         grid = []
         with open(filename) as file:
-            for i, line in enumerate(file):
-                grid.append([Cell(i, j, int(c)) for j, c in enumerate(line) if c != '\n'])
+            for j, line in enumerate(file):
+                grid.append([Cell(i, j, int(c)) for i, c in enumerate(line) if c != '\n'])
         clist = cls(len(grid), len(grid[0]), False)
         clist.grid = grid
         return clist
 
 
 if __name__ == '__main__':
-
-    game = GameOfLife()
-    game.run()
+    list = CellList.from_file('grid.txt')
+    print(list)
+    for i in range(7):
+        list.update()
+        print(i + 1, '\n', list)
+    #game = GameOfLife()
+    #game.run()
