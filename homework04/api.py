@@ -19,7 +19,7 @@ def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retri
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
     domain = url
-    access_token = "7f470e9071b38b60d40465e4ad6c005cc945f2eb3908e5e395c431cd7197f4239acc67c95062267d4ca95"
+    access_token = "5fdea00c123047bc2061ed021786b468da03b979114c4465522e7dc10f2789b06adf53a318c6180d0cea9"
 
     query_params = {
         'domain': domain,
@@ -50,6 +50,7 @@ def get_friends(user_id, fields):
     response = get("https://api.vk.com/method", params)
     return response
 
+
 def age_predict(user_id):
     """ Наивный прогноз возраста по возрасту друзей
 
@@ -59,7 +60,20 @@ def age_predict(user_id):
     """
     assert isinstance(user_id, int), "user_id must be positive integer"
     assert user_id > 0, "user_id must be positive integer"
-    # PUT YOUR CODE HERE
+    response = get_friends(user_id, 'bdate')
+    print(response.json())
+    for i in range(5):
+        print(response.json()['response']['items'][i])
+    count = response.json()['response']['count']
+    age = 0
+    for i in range(response.json()['response']['count']):
+        if ('bdate' not in response.json()['response']['items'][i])\
+                or len(response.json()['response']['items'][i]['bdate']) < 7:
+            count -= 1
+        else:
+            age += bdate_parse(response.json()['response']['items'][i]['bdate'])
+    return age // count
+#age = sum(bdate_parse(s['bdate']) for s in response.json()['response']['items'] if len(s['bdate']) < 7)
 
 
 def messages_get_history(user_id, offset=0, count=20):
@@ -93,6 +107,7 @@ def plotly_messages_freq(freq_list):
     # PUT YOUR CODE HERE
     pass
 
+
 def get_network(users_ids, as_edgelist=True):
     # PUT YOUR CODE HERE
     pass
@@ -102,7 +117,11 @@ def plot_graph(graph):
     # PUT YOUR CODE HERE
     pass
 
+
+def bdate_parse(bdate):
+    age = 2017-int(bdate.split(sep='.')[2])
+    return age
+
+
 if __name__ == '__main__':
-    response = get_friends(65000344, 'bdate')
-    print(response)
-    print(response.json())
+    print(age_predict(65000344))
