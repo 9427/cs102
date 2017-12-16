@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 config = {
-    'VK_ACCESS_TOKEN': 'b25bab4e1d96a2990cfa0dacfae0d51de9c7620371af1ea03af6d4f77aa58cba004f1af23006d2c119088',
+    'VK_ACCESS_TOKEN': 'd05b1440a5d401e04b9872fc039d9129724e4bdcf55bc44c3429de2de26aa3fb13193bdc87752d89361e5',
     'PLOTLY_USERNAME': 'Имя пользователя Plot.ly',
     'PLOTLY_API_KEY': 'Ключ доступа Plot.ly'
 }
@@ -73,10 +73,14 @@ def age_predict(user_id):
         else:
             age += bdate_parse(response.json()['response']['items'][i]['bdate'])
     return age // count
-#age = sum(bdate_parse(s['bdate']) for s in response.json()['response']['items'] if len(s['bdate']) < 7)
 
 
-def messages_get_history(user_id, offset=0, count=20):
+def bdate_parse(bdate):
+    age = 2017-int(bdate.split(sep='.')[2])
+    return age
+
+
+def messages_get_history(user_id, offset=0, count=100):
     """ Получить историю переписки с указанным пользователем
 
     :param user_id: идентификатор пользователя, с которым нужно получить историю переписки
@@ -89,7 +93,6 @@ def messages_get_history(user_id, offset=0, count=20):
     assert offset >= 0, "user_id must be positive integer"
     assert count >= 0, "user_id must be positive integer"
     domain = "https://api.vk.com/method"
-    access_token = "5fdea00c123047bc2061ed021786b468da03b979114c4465522e7dc10f2789b06adf53a318c6180d0cea9"
 
     query_params = {
         'domain': domain,
@@ -103,7 +106,8 @@ def messages_get_history(user_id, offset=0, count=20):
     query = "{domain}/{method}?access_token={access_token}&user_id={user_id}&offset={offset}&count={count}&v=5.53".format(
         **query_params)
     response = requests.get(query)
-    return response
+    print(response.json())
+    return response.json()['response']
 
 
 def count_dates_from_messages(messages):
@@ -112,13 +116,12 @@ def count_dates_from_messages(messages):
     :param messages: список сообщений
     """
     from collections import Counter
-
-    messages_get_history(user_id)
-    count = messages['count']
+    count = 100
     date_list = []
     for i in range(count):
         date_list.append(datetime.fromtimestamp(messages['items'][i]['date']).strftime("%Y-%m-%d"))
     return Counter(date_list)
+
 
 def plotly_messages_freq(freq_dict):
     """ Построение графика с помощью Plot.ly
@@ -126,14 +129,23 @@ def plotly_messages_freq(freq_dict):
     :param freq_list: список дат и их частот
     """
     import plotly
-
-    plotly.tools.set_credentials_file(username='', api_key='')
-    messages = messages_get_history(user_id='65000344')
-    freq_dict = count_dates_from_messages(messages)
+    plotly.tools.set_credentials_file(username='9427', api_key='rWqlbcvoUiQ0biGrGNN3')
     date_list, date_freq = dict_split(freq_dict)
     data = [plotly.graph_objs.Scatter(x=date_list, y=date_freq)]
     plotly.plotly.plot(data)
     pass
+
+
+def dict_split(freq_dict):
+    #list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
+    #list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
+    return list(freq_dict.keys()), list(freq_dict.values())
+
+
+def graph_messages(user_id):
+    messages = messages_get_history(user_id)
+    freq_dict = count_dates_from_messages(messages)
+    plotly_messages_freq(freq_dict)
 
 
 def get_network(users_ids, as_edgelist=True):
@@ -146,16 +158,8 @@ def plot_graph(graph):
     pass
 
 
-def bdate_parse(bdate):
-    age = 2017-int(bdate.split(sep='.')[2])
-    return age
-
-
-def dict_split(freq_dict):
-    list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
-    list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
-    return list1, list2
-
 if __name__ == '__main__':
-    responses = messages_get_history(740914)
-    print(responses.json())
+    #103435854
+    #339123961
+    #382652267
+    graph_messages(103435854)
