@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 config = {
-    'VK_ACCESS_TOKEN': 'Tокен доступа для ВК',
+    'VK_ACCESS_TOKEN': 'b25bab4e1d96a2990cfa0dacfae0d51de9c7620371af1ea03af6d4f77aa58cba004f1af23006d2c119088',
     'PLOTLY_USERNAME': 'Имя пользователя Plot.ly',
     'PLOTLY_API_KEY': 'Ключ доступа Plot.ly'
 }
@@ -19,11 +19,9 @@ def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retri
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
     domain = url
-    access_token = "5fdea00c123047bc2061ed021786b468da03b979114c4465522e7dc10f2789b06adf53a318c6180d0cea9"
-
     query_params = {
         'domain': domain,
-        'access_token': access_token,
+        'access_token': config['VK_ACCESS_TOKEN'],
         'user_id': params['user_id'],
         'fields': params['fields'],
         'method': params['method']
@@ -95,7 +93,7 @@ def messages_get_history(user_id, offset=0, count=20):
 
     query_params = {
         'domain': domain,
-        'access_token': access_token,
+        'access_token': config['VK_ACCESS_TOKEN'],
         'user_id': user_id,
         'method': 'messages.getHistory',
         'offset': offset,
@@ -113,15 +111,28 @@ def count_dates_from_messages(messages):
 
     :param messages: список сообщений
     """
-    # PUT YOUR CODE HERE
+    from collections import Counter
 
+    messages_get_history(user_id)
+    count = messages['count']
+    date_list = []
+    for i in range(count):
+        date_list.append(datetime.fromtimestamp(messages['items'][i]['date']).strftime("%Y-%m-%d"))
+    return Counter(date_list)
 
-def plotly_messages_freq(freq_list):
+def plotly_messages_freq(freq_dict):
     """ Построение графика с помощью Plot.ly
 
     :param freq_list: список дат и их частот
     """
-    # PUT YOUR CODE HERE
+    import plotly
+
+    plotly.tools.set_credentials_file(username='', api_key='')
+    messages = messages_get_history(user_id='65000344')
+    freq_dict = count_dates_from_messages(messages)
+    date_list, date_freq = dict_split(freq_dict)
+    data = [plotly.graph_objs.Scatter(x=date_list, y=date_freq)]
+    plotly.plotly.plot(data)
     pass
 
 
@@ -140,6 +151,11 @@ def bdate_parse(bdate):
     return age
 
 
+def dict_split(freq_dict):
+    list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
+    list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
+    return list1, list2
+
 if __name__ == '__main__':
-    response = messages_get_history(740914)
-    print(response.json())
+    responses = messages_get_history(740914)
+    print(responses.json())
