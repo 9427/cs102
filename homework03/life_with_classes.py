@@ -83,7 +83,7 @@ class CellList:
         self.nrows = nrows
         self.ncols = ncols
         self.row = 0
-        self.col = 0
+        self.col = -1
         if randomize:
             self.grid = [[Cell(i, j, random.randint(0, 1)) for i in range(self.ncols)] for j in range(self.nrows)]
         else:
@@ -118,15 +118,15 @@ class CellList:
         return self
 
     def __next__(self):
-        if self.col == self.ncols:
-            self.col = 0
+        if self.col == self.ncols-1:
+            self.col = -1
             self.row += 1
         self.col += 1
         if self.row == self.nrows:
             self.row = 0
-            self.col = 0
+            self.col = -1
             raise StopIteration
-        return self.grid[self.row-1][self.col-1]
+        return self.grid[self.row][self.col]
 
     def __str__(self):
         s = ''
@@ -151,10 +151,22 @@ class CellList:
 
 
 if __name__ == '__main__':
-    list = CellList.from_file('grid.txt')
-    print(list)
+    #clist = CellList.from_file('grid.txt')
+    #print([cell.state for cell in clist])
+
+    clist = CellList.from_file('grid.txt')
+    print(clist)
     for i in range(7):
-        list.update()
-        print(i + 1, '\n', list)
+        clist.update()
+        c = 0
+        row = []
+        states = []                 #copied from test_can_update()
+        for cell in clist:
+            row.append(int(cell.is_alive()))
+            c += 1
+            if c % clist.ncols == 0:
+                states.append(row)
+                row = []
+        print(i+1, states)
     #game = GameOfLife()
     #game.run()
