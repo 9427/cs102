@@ -172,8 +172,35 @@ def get_network(user_ids, as_edgelist=True):
     pass
 
 
-def plot_graph(graph):
-    # PUT YOUR CODE HERE
+def plot_graph(graph=1):
+    import igraph
+    from jgraph import Graph, plot
+
+    vertices = [i for i in range(7)]
+    edges = [
+        (0, 2), (0, 1), (0, 3),
+        (1, 0), (1, 2), (1, 3),
+        (2, 0), (2, 1), (2, 3), (2, 4),
+        (3, 0), (3, 1), (3, 2),
+        (4, 5), (4, 6),
+        (5, 4), (5, 6),
+        (6, 4), (6, 5)
+    ]
+
+    g = Graph(vertex_attrs={"label": vertices},
+              edges=edges, directed=False)
+    N = len(vertices)
+    visual_style = {}
+    visual_style["layout"] = g.layout_fruchterman_reingold(
+        maxiter=1000,
+        area=N ** 3,
+        repulserad=N ** 3)
+    # g.simplify(multiple=True, loops=True)
+    # communities = g.community_edge_betweenness(directed=False)
+    # clusters = communities.as_clustering()
+    # pal = igraph.drawing.colors.ClusterColoringPalette(len(clusters))
+    # g.vs['color'] = pal.get_many(clusters.membership)
+    plot(g, **visual_style)
     pass
 
 
@@ -181,4 +208,5 @@ if __name__ == '__main__':
     #103435854
     #339123961
     #382652267
-    print(get_mutual_friends(65000344, '', 103435854))
+    #print(get_mutual_friends(65000344, '', 103435854))
+    plot_graph()
