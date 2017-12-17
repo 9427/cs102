@@ -4,23 +4,20 @@ from datetime import datetime
 
 config = {
     'VK_ACCESS_TOKEN': 'd05b1440a5d401e04b9872fc039d9129724e4bdcf55bc44c3429de2de26aa3fb13193bdc87752d89361e5',
-    'PLOTLY_USERNAME': 'Имя пользователя Plot.ly',
-    'PLOTLY_API_KEY': 'Ключ доступа Plot.ly'
+    'DOMAIN': 'https://api.vk.com/method'
 }
 
 
-def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retries=5, backoff_factor=0.3):
+def get(params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retries=5, backoff_factor=0.3):
     """ Выполнить GET-запрос
 
-    :param url: адрес, на который необходимо выполнить запрос
     :param params: параметры запроса
     :param timeout: максимальное время ожидания ответа от сервера
     :param max_retries: максимальное число повторных запросов
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
-    domain = url
     query_params = {
-        'domain': domain,
+        'domain': config['DOMAIN'],
         'access_token': config['VK_ACCESS_TOKEN'],
         'user_id': params['user_id'],
         'fields': params['fields'],
@@ -47,7 +44,7 @@ def get_friends(user_id, fields):
         'fields': fields,
         'method': 'friends.get'
     }
-    response = get("https://api.vk.com/method", params)
+    response = get(params)
     return response
 
 
@@ -92,10 +89,9 @@ def messages_get_history(user_id, offset=0, count=100):
     assert isinstance(offset, int), "offset must be positive integer"
     assert offset >= 0, "user_id must be positive integer"
     assert count >= 0, "user_id must be positive integer"
-    domain = "https://api.vk.com/method"
 
     query_params = {
-        'domain': domain,
+        'domain': config['DOMAIN'],
         'access_token': config['VK_ACCESS_TOKEN'],
         'user_id': user_id,
         'method': 'messages.getHistory',
@@ -126,7 +122,7 @@ def count_dates_from_messages(messages):
 def plotly_messages_freq(freq_dict):
     """ Построение графика с помощью Plot.ly
 
-    :param freq_list: список дат и их частот
+    :param freq_dict: словарь дат и их частот
     """
     import plotly
     plotly.tools.set_credentials_file(username='9427', api_key='rWqlbcvoUiQ0biGrGNN3')
@@ -137,8 +133,8 @@ def plotly_messages_freq(freq_dict):
 
 
 def dict_split(freq_dict):
-    #list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
-    #list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
+    # list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
+    # list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
     return list(freq_dict.keys()), list(freq_dict.values())
 
 
@@ -148,7 +144,30 @@ def graph_messages(user_id):
     plotly_messages_freq(freq_dict)
 
 
-def get_network(users_ids, as_edgelist=True):
+def get_mutual_friends(user_id, fields, target_id):
+    """ Returns a list of user IDs or detailed information about a user's friends """
+    assert isinstance(user_id, int), "user_id must be positive integer"
+    assert isinstance(target_id, int), "target_id must be positive integer"
+    assert isinstance(fields, str), "fields must be string"
+    assert user_id > 0, "user_id must be positive integer"
+    assert target_id > 0, "target_id must be positive integer"
+
+    query_params = {
+        'domain': config['DOMAIN'],
+        'access_token': config['VK_ACCESS_TOKEN'],
+        'user_id': user_id,
+        'method': 'friends.getMutual',
+        'fields': fields,
+        'target_id': target_id
+    }
+
+    query = "{domain}/{method}?access_token={access_token}&user_id={user_id}&fields={fields}&target_uid={target_id}&v=5.53".format(
+        **query_params)
+    response = requests.get(query)
+    return response.json()
+
+
+def get_network(user_ids, as_edgelist=True):
     # PUT YOUR CODE HERE
     pass
 
@@ -162,4 +181,4 @@ if __name__ == '__main__':
     #103435854
     #339123961
     #382652267
-    graph_messages(103435854)
+    print(get_mutual_friends(65000344, '', 103435854))
