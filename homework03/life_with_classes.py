@@ -96,8 +96,8 @@ class CellList:
         for i in range(-1, 2):
             for j in range(-1, 2):
                 if i or j:
-                     if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
-                         neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
+                    if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
+                        neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
         return neighbours
 
     def update(self):
@@ -105,12 +105,13 @@ class CellList:
         for row in range(self.nrows):
             new_clist.append([])
             for col in range(self.ncols):
-                if ((1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4 and self.grid[row][col].is_alive())
-                or (sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3 and not self.grid[row][col].is_alive())):
+                if ((1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4
+                     and self.grid[row][col].is_alive())
+                    or (sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3
+                        and not self.grid[row][col].is_alive())):
                     new_clist[row].append(Cell(row, col, 1))
                 else:
                     new_clist[row].append(Cell(row, col, 0))
-        #new_clist.pop(0)
         self.grid = new_clist
         return self
 
@@ -151,22 +152,5 @@ class CellList:
 
 
 if __name__ == '__main__':
-    #clist = CellList.from_file('grid.txt')
-    #print([cell.state for cell in clist])
-
-    clist = CellList.from_file('grid.txt')
-    print(clist)
-    for i in range(7):
-        clist.update()
-        c = 0
-        row = []
-        states = []                 #copied from test_can_update()
-        for cell in clist:
-            row.append(int(cell.is_alive()))
-            c += 1
-            if c % clist.ncols == 0:
-                states.append(row)
-                row = []
-        print(i+1, states)
-    #game = GameOfLife()
-    #game.run()
+    game = GameOfLife()
+    game.run()
