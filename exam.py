@@ -40,9 +40,17 @@ _ X _ X
 _ X G X
 """
 
+
 def print_maze(maze):
     """ Отрисовать лабиринт """
-    # Ваш код должен быть тут
+    s = ''
+    for row in range(len(maze)):
+        for col in range(len(maze[0])):
+            s += maze[row][col]
+            s += ' '
+        s += '\n'
+    print(s)
+    pass
 
 
 """
@@ -263,4 +271,4 @@ def dfs_paths(g, start, end, path=None):
 
 
 if __name__ == '__main__':
-    print(read_maze())
+    print_maze(read_maze())
