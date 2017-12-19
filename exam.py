@@ -155,7 +155,25 @@ def maze2graph(maze):
     """ Преобразовать лабиринт в граф """
     g = Graph()
     start = end = None
-    # Ваш код должен быть тут
+    for row in range(len(maze)):
+        for col in range(len(maze[0])):
+            if maze[row][col] != 'X':
+                if maze[row][col] == 'S':
+                    start = (row, col)
+                if maze[row][col] == 'G':
+                    end = (row, col)
+                g.add_vertex((row, col))
+    for row in range(len(maze)):
+        for col in range(len(maze[0])):
+            if (row, col) in g.graph.keys():
+                if (row - 1, col) in g.graph.keys():
+                    g.add_edge(((row, col), (row - 1, col)))
+                if (row + 1, col) in g.graph.keys():
+                    g.add_edge(((row, col), (row + 1, col)))
+                if (row, col - 1) in g.graph.keys():
+                    g.add_edge(((row, col), (row, col - 1)))
+                if (row, col + 1) in g.graph.keys():
+                    g.add_edge(((row, col), (row, col + 1)))
     return g, start, end
 
 
@@ -279,18 +297,7 @@ def dfs_paths(g, start, end, path=None):
 
 
 if __name__ == '__main__':
-    print_maze(read_maze())
-    g = Graph()
-    g.add_vertex('1')
-    g.add_vertex('2')
-    g.add_vertex('3')
-    g.add_vertex('4')
-    g.add_edge(('1', '2'))
-    g.add_edge(('2', '1'))
-    g.add_edge(('1', '3'))
-    g.add_edge(('3', '1'))
-    g.add_edge(('2', '3'))
-    g.add_edge(('3', '2'))
-    g.add_edge(('3', '4'))
-    g.add_edge(('4', '3'))
+    print(read_maze())
+    g, _, _ = maze2graph(read_maze())
     print(g.graph)
+
