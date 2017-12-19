@@ -22,6 +22,7 @@ _ X G X
 [['S', 'X', '_', 'X'], ['_', '_', '_', '_'], ['_', 'X', '_', 'X'], ['_', 'X', 'G', 'X']]
 """
 
+
 def read_maze():
     """ Прочитать лабиринт из файла """
     grid = []
@@ -81,6 +82,7 @@ g.graph
 {'1': ['2', '3'], '2': ['1', '3'], '3': ['1', '2', '4'], '4': ['3']}
 """
 
+
 class Graph:
 
     def __init__(self):
@@ -88,11 +90,14 @@ class Graph:
 
     def add_vertex(self, vertex):
         """ Добавить новую вершину vertex в граф """
-        # Ваш код должен быть тут
+        self.graph[vertex] = []
+        return self
 
     def add_edge(self, edge):
         """ Добавить новое ребро edge в граф """
-        # Ваш код должен быть тут
+        vertex1, vertex2 = edge
+        self.graph[vertex1].append(vertex2)
+        return self
 
 
 """
@@ -145,12 +150,14 @@ _ X G X
 вход и выход из лабиринта
 """
 
+
 def maze2graph(maze):
     """ Преобразовать лабиринт в граф """
     g = Graph()
     start = end = None
     # Ваш код должен быть тут
     return g, start, end
+
 
 """
 Найти выход из лабиринта можно по следующему алгоритму, который называется 
@@ -265,6 +272,7 @@ new_path = [(0, 0)] + [(1, 0), (1, 1), (1, 2), (2, 2), (3, 2)]
 точками.
 """
 
+
 def dfs_paths(g, start, end, path=None):
     """ Найти все пути в лабиринте """
     # Ваш код должен быть тут
@@ -272,3 +280,17 @@ def dfs_paths(g, start, end, path=None):
 
 if __name__ == '__main__':
     print_maze(read_maze())
+    g = Graph()
+    g.add_vertex('1')
+    g.add_vertex('2')
+    g.add_vertex('3')
+    g.add_vertex('4')
+    g.add_edge(('1', '2'))
+    g.add_edge(('2', '1'))
+    g.add_edge(('1', '3'))
+    g.add_edge(('3', '1'))
+    g.add_edge(('2', '3'))
+    g.add_edge(('3', '2'))
+    g.add_edge(('3', '4'))
+    g.add_edge(('4', '3'))
+    print(g.graph)
