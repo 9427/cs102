@@ -292,12 +292,21 @@ new_path = [(0, 0)] + [(1, 0), (1, 1), (1, 2), (2, 2), (3, 2)]
 
 
 def dfs_paths(g, start, end, path=None):
-    """ Найти все пути в лабиринте """
-    # Ваш код должен быть тут
+    if not path:
+        path = []
+    path = path + [start]
+    if start == end:
+        return path
+    if not g.graph[start]:
+        return None
+    for node in g.graph[start]:
+        if node not in path:
+            new_path = dfs_paths(g, node, end, path)
+            if new_path: return new_path
+    return None
 
 
 if __name__ == '__main__':
     print(read_maze())
-    g, _, _ = maze2graph(read_maze())
-    print(g.graph)
-
+    #     graph, start, end = maze2graph(read_maze())
+    print(dfs_paths(*maze2graph(read_maze())))

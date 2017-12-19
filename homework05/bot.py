@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 
 config = {
-    'access-token': 'd05b1440a5d401e04b9872fc039d9129724e4bdcf55bc44c3429de2de26aa3fb13193bdc87752d89361e5',
+    'access_token': '501843166:AAHihi2TwdWucnR2x-PfD-uLwN4k9njSdXI',
     'domain': 'http://www.ifmo.ru/ru/schedule/0'
 }
 
@@ -27,7 +27,7 @@ def parse_schedule_for_a_monday(web_page):
     soup = BeautifulSoup(web_page, "html5lib")
 
     # Получаем таблицу с расписанием на понедельник
-    schedule_table = soup.find("table", attrs={"id": "1day"})
+    schedule_table = soup.find("table", attrs={"id": "2day"})
 
     # Время проведения занятий
     times_list = schedule_table.find_all("td", attrs={"class": "time"})
@@ -45,7 +45,7 @@ def parse_schedule_for_a_monday(web_page):
     return times_list, locations_list, lessons_list
 
 
-@bot.message_handler(commands=['monday'])
+# @bot.message_handler(commands=['monday'])
 def get_monday(message):
     """ Получить расписание на понедельник """
     _, group = message.text.split()
@@ -61,8 +61,30 @@ def get_monday(message):
 @bot.message_handler(commands=['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
 def get_schedule(message):
     """ Получить расписание на указанный день """
-    # PUT YOUR CODE HERE
-    pass
+    day, group = message.text.split()
+    web_page = get_page(group)
+    soup = BeautifulSoup(web_page, "html5lib")
+    if day == '/monday' or day == '/sunday' or day == '/Monday' or day == '/Sunday':
+        schedule_table = soup.find("table", attrs={"id": "1day"})
+    elif day == '/tuesday' or day == '/Tuesday':
+        schedule_table = soup.find("table", attrs={"id": "2day"})
+    elif day == '/wednesday' or day == '/Wednesday':
+        schedule_table = soup.find("table", attrs={"id": "3day"})
+    elif day == '/thursday' or day == '/Thursday':
+        schedule_table = soup.find("table", attrs={"id": "4day"})
+    elif day == '/friday' or day == '/Friday':
+        schedule_table = soup.find("table", attrs={"id": "5day"})
+    elif day == '/saturday' or day == '/Saturday':
+        schedule_table = soup.find("table", attrs={"id": "6day"})
+    if not schedule_table:
+        return None
+    times_list = schedule_table.find_all("td", attrs={"class": "time"})
+    times_list = [time.span.text for time in times_list]
+    locations_list = schedule_table.find_all("td", attrs={"class": "room"})
+    locations_list = [room.span.text for room in locations_list]
+    lessons_list = schedule_table.find_all("td", attrs={"class": "lesson"})
+    lessons_list = [lesson.text.replace('\n', '').replace('\t', '') for lesson in lessons_list]
+    return times_list, locations_list, lessons_list
 
 
 @bot.message_handler(commands=['near'])
