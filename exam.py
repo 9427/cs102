@@ -290,52 +290,6 @@ new_path = [(0, 0)] + [(1, 0), (1, 1), (1, 2), (2, 2), (3, 2)]
 точками.
 """
 
-'''
-def dfs_paths(g, start, goal):
-    stack = [(start, [start])]
-    while stack:
-        (vertex, path) = stack.pop()
-        for v_next in g.graph[vertex]:
-            if v_next not in path:
-                if v_next == goal:
-                    return path + [v_next]
-                else:
-                    stack.append((v_next, path + [v_next]))
-
-
-
-def dfs1_paths(g, start, end, path=None):
-    if not path:
-        path = []
-    path = path + [start]
-    if start == end:
-        return path
-    if not g.graph[start]:
-        return None
-    for possible_path in g.graph[start]:
-        if possible_path not in path:
-            new_path = dfs_paths(g, possible_path, end, path)
-            if new_path:
-                return new_path
-    return None
-
-
-def dfs2_paths(g, start, end, path=None):
-    if not path:
-        path = []
-    path = path + [start]
-    if start == end:
-        return path
-    if not g.graph[start]:
-        return None
-    for possible_path in g.graph[start]:
-        if possible_path not in path:
-            new_path = dfs_paths(g, possible_path, end, path)
-            if new_path:
-                return new_path
-    return None
-'''
-
 
 def dfs_paths(g, start, goal):
     stack = [(start, [start])]
