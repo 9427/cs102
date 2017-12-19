@@ -23,10 +23,10 @@ _ X G X
 """
 
 
-def read_maze():
+def read_maze(filename):
     """ Прочитать лабиринт из файла """
     grid = []
-    with open('maze.txt') as file:
+    with open(filename) as file:
         for i, line in enumerate(file):
             grid.append([c for j, c in enumerate(line) if c in 'SXG_'])
     return grid
@@ -290,8 +290,21 @@ new_path = [(0, 0)] + [(1, 0), (1, 1), (1, 2), (2, 2), (3, 2)]
 точками.
 """
 
+'''
+def dfs_paths(g, start, goal):
+    stack = [(start, [start])]
+    while stack:
+        (vertex, path) = stack.pop()
+        for v_next in g.graph[vertex]:
+            if v_next not in path:
+                if v_next == goal:
+                    return path + [v_next]
+                else:
+                    stack.append((v_next, path + [v_next]))
 
-def dfs_paths(g, start, end, path=None):
+
+
+def dfs1_paths(g, start, end, path=None):
     if not path:
         path = []
     path = path + [start]
@@ -299,14 +312,49 @@ def dfs_paths(g, start, end, path=None):
         return path
     if not g.graph[start]:
         return None
-    for node in g.graph[start]:
-        if node not in path:
-            new_path = dfs_paths(g, node, end, path)
-            if new_path: return new_path
+    for possible_path in g.graph[start]:
+        if possible_path not in path:
+            new_path = dfs_paths(g, possible_path, end, path)
+            if new_path:
+                return new_path
     return None
 
 
+def dfs2_paths(g, start, end, path=None):
+    if not path:
+        path = []
+    path = path + [start]
+    if start == end:
+        return path
+    if not g.graph[start]:
+        return None
+    for possible_path in g.graph[start]:
+        if possible_path not in path:
+            new_path = dfs_paths(g, possible_path, end, path)
+            if new_path:
+                return new_path
+    return None
+'''
+
+
+def dfs_paths(g, start, goal):
+    stack = [(start, [start])]
+    path_list = []
+    while stack:
+        (vertex, path) = stack.pop()
+        for v_next in g.graph[vertex]:
+            if v_next not in path:
+                if v_next == goal:
+                    path_list.append(path + [v_next])
+                else:
+                    stack.append((v_next, path + [v_next]))
+    return path_list
+
+
 if __name__ == '__main__':
-    print(read_maze())
-    #     graph, start, end = maze2graph(read_maze())
-    print(dfs_paths(*maze2graph(read_maze())))
+    # 1
+    print(read_maze('maze.txt'))
+    # 2
+    print_maze(read_maze('maze.txt'))
+    # 5
+    print(dfs_paths(*maze2graph(read_maze('maze.txt'))))
