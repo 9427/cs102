@@ -1,11 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import requests
 from datetime import datetime
 
 
 config = {
-    'VK_ACCESS_TOKEN': 'd05b1440a5d401e04b9872fc039d9129724e4bdcf55bc44c3429de2de26aa3fb13193bdc87752d89361e5',
-    'PLOTLY_USERNAME': 'Имя пользователя Plot.ly',
-    'PLOTLY_API_KEY': 'Ключ доступа Plot.ly'
+    'VK_ACCESS_TOKEN': '4270f26c717647d6025e28fba2df0cb2442480d81d0b0a969010a84e04b21d92037db246b893178f3ddb6',
+    'PLOTLY_USERNAME': '',
+    'PLOTLY_API_KEY': ''
 }
 
 
@@ -148,18 +150,49 @@ def graph_messages(user_id):
     plotly_messages_freq(freq_dict)
 
 
-def get_network(users_ids, as_edgelist=True):
-    # PUT YOUR CODE HERE
-    pass
+def get_network(user_id_list, as_edgelist=True):
+    edgelist = []
+    matrix = [[0 for col in range(len(user_id_list))]
+              for row in range(len(user_id_list))]
+    for x, user_id in enumerate(user_id_list):
+        response = get_friends(user_id, fields='bdate')
+        if (response.json()).get('error'):
+            continue
+        friends_of_friend = []
+        nfriend = 0
+        for friend in response.json()['response']['items']:
+            id_of_user = response.json()['response']['items'][nfriend]['id']
+            friends_of_friend.append(id_of_user)
+            nfriend += 1
+        for y in range(x + 1, len(user_id_list)):
+            if user_id_list[y] in friends_of_friend:
+                if as_edgelist:
+                    edgelist.append((x, y))
+                else:
+                    matrix[x][y] = matrix[y][x] = 1
+    if as_edgelist:
+        return edgelist
+    else:
+        return matrix
 
 
 def plot_graph(graph):
-    # PUT YOUR CODE HERE
-    pass
+    import networkx
+    import community
+    import matplotlib.pyplot as plot
+    nodes = set([n for n, m in graph] + [m for n, m in graph])
+    g = networkx.Graph()
+    for node in nodes:
+        g.add_node(node)
+    for edge in graph:
+        g.add_edge(edge[0], edge[1])
+    pos = networkx.shell_layout(g)
+    part = community.best_partition(g)
+    values = [part.get(node) for node in g.nodes()]
+    networkx.draw_spring(g, cmap=plot.get_cmap('jet'), node_color=values, node_size=50, with_labels=False)
+    plot.show()
 
 
 if __name__ == '__main__':
-    #103435854
-    #339123961
-    #382652267
-    graph_messages(103435854)
+    print(get_friends(65000344, 'bdate').json())
+    plot_graph(get_network((65000344, 740914, 1112775, 3769575, 3831134, 8586257)))
