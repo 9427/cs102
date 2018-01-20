@@ -3,11 +3,8 @@
 import requests
 from datetime import datetime
 
-
 config = {
-    'VK_ACCESS_TOKEN': '4270f26c717647d6025e28fba2df0cb2442480d81d0b0a969010a84e04b21d92037db246b893178f3ddb6',
-    'PLOTLY_USERNAME': '',
-    'PLOTLY_API_KEY': ''
+    'VK_ACCESS_TOKEN': '4270f26c717647d6025e28fba2df0cb2442480d81d0b0a969010a84e04b21d92037db246b893178f3ddb6'
 }
 
 
@@ -20,6 +17,9 @@ def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retri
     :param max_retries: максимальное число повторных запросов
     :param backoff_factor: коэффициент экспоненциального нарастания задержки
     """
+    import time
+    import random
+    delay = 0
     domain = url
     query_params = {
         'domain': domain,
@@ -28,10 +28,17 @@ def get(url, params={'user_id': 65000344, 'fields': 'sex'}, timeout=5, max_retri
         'fields': params['fields'],
         'method': params['method']
     }
-
     query = "{domain}/{method}?access_token={access_token}&user_id={user_id}&fields={fields}&v=5.53".format(
         **query_params)
-    response = requests.get(query)
+    for i in range(max_retries):
+        try:
+            response = requests.get(query)
+            return response.json()
+        except:
+            pass
+        time.sleep(delay)
+        delay = min(delay * backoff_factor, timeout)
+        delay += random.random()
     return response
 
 
@@ -139,8 +146,6 @@ def plotly_messages_freq(freq_dict):
 
 
 def dict_split(freq_dict):
-    #list1 = [freq_dict.keys[i] for i in sorted(freq_dict.keys())]
-    #list2 = [freq_dict.values[i] for i in sorted(freq_dict.keys())]
     return list(freq_dict.keys()), list(freq_dict.values())
 
 
