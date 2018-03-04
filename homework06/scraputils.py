@@ -19,6 +19,8 @@ def extract_news(parser):
             'title': article_list[i].string,
             'url': article_list[i].get('href')
         }
+        if data['url'].find('item?id=') == 0:
+            data['url'] = 'https://news.ycombinator.com/' + data['url']
         news_list.append(data)
     return news_list
 
