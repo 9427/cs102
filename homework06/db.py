@@ -2,11 +2,13 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from scraputils import get_news
 
 
 Base = declarative_base()
 engine = create_engine("sqlite:///news.db")
 session = sessionmaker(bind=engine)
+s = session()
 
 
 class News(Base):
@@ -19,4 +21,10 @@ class News(Base):
     points = Column(Integer)
     label = Column(String)
 
+
 Base.metadata.create_all(bind=engine)
+news_dict = get_news('https://news.ycombinator.com/')
+for data in news_dict:
+    news = News(title=data['title'], author=data['author'], url=data['url'], comments=data['comments'], points=data['points'])
+    s.add(news)
+    s.commit()
