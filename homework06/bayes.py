@@ -1,10 +1,23 @@
+from collections import defaultdict
+
+
 class NaiveBayesClassifier:
 
     def __init__(self, alpha):
         pass
 
-    def fit(self, X, y):
+    def fit(self, x, y):
         """ Fit Naive Bayes classifier according to X, y. """
+        classes = defaultdict(lambda:0)
+        freq = defaultdict(lambda:0)
+        for label in y:
+            classes[label] += 1
+            for trait in str(x).split():
+                freq[label, trait] += 1
+        for label, trait in freq:
+            freq[label, trait] /= classes[label]
+        for c in classes:
+            classes[c] /= len(y)
         pass
 
     def predict(self, X):

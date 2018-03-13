@@ -19,7 +19,7 @@ class News(Base):
     url = Column(String)
     comments = Column(Integer)
     points = Column(Integer)
-    label = Column(String)
+    label = Column(Integer)
 
 
 Base.metadata.create_all(bind=engine)
