@@ -33,7 +33,7 @@
             <tfoot class="full-width">
                 <tr>
                     <th colspan="7">
-                        <a href="/update" class="ui right floated small primary button">decorative button that does nothing</a>
+                        <a href="/update" class="ui right floated small primary button">this button does its best to update the database&#13;&#10; it really doesn't want to disappoint you</a>
                     </th>
                 </tr>
             </tfoot>

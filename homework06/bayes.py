@@ -22,6 +22,10 @@ class NaiveBayesClassifier:
 
     def predict(self, X):
         """ Perform classification on an array of test vectors X. """
+        classes, prob = self.predictor
+        return min(classes.keys(),  # calculate argmin(-log(C|O))
+                   key=lambda cl: -log(classes[cl]) + \
+                                  sum(-log(prob.get((cl, feat), 10 ** (-7))) for feat in feats))
         pass
 
     def score(self, X_test, y_test):

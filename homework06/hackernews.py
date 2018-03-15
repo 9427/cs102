@@ -16,13 +16,21 @@ def news_list():
 
 @route("/add_label/")
 def add_label():
-    # PUT YOUR CODE HERE
+
     redirect("/news")
 
 
 @route("/update")
 def update_news():
-    # PUT YOUR CODE HERE
+    s = session()
+    news_dict = get_news('https://news.ycombinator.com/')
+    for data in news_dict:
+        if not s.query(News).filter(News.title == data['title']):
+            break
+        news = News(title=data['title'], author=data['author'], url=data['url'], comments=data['comments'],
+                     points=data['points'])
+        s.add(news)
+        s.commit()
     redirect("/news")
 
 

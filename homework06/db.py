@@ -21,10 +21,9 @@ class News(Base):
     points = Column(Integer)
     label = Column(Integer)
 
-
-Base.metadata.create_all(bind=engine)
+'''Base.metadata.create_all(bind=engine)
 news_dict = get_news('https://news.ycombinator.com/')
 for data in news_dict:
     news = News(title=data['title'], author=data['author'], url=data['url'], comments=data['comments'], points=data['points'])
     s.add(news)
-    s.commit()
+    s.commit()'''

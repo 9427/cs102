@@ -27,6 +27,8 @@ def extract_news(parser):
         except:
             print('Error parsing article', err_num + len(news_list))
             err_num += 1
+    if err_num == 30:
+        return False
     return news_list
 
 
@@ -34,12 +36,15 @@ def get_news(url, n_pages=1):
     """ Collect news from a given web page """
     news = []
     next_page = 'news?p=1'
-    n_pages = 20
-    for i in range(2, n_pages + 2):
+    i = 1
+    while True:
         print("Collecting data from page: {}".format(url))
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
         news_list = extract_news(soup)
+        if not news_list:
+            break
+        i += 1
         next_page = 'news?p=' + str(i)
         url = "https://news.ycombinator.com/" + next_page
         news.extend(news_list)
