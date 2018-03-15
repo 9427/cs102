@@ -14,9 +14,20 @@ def news_list():
     return template('news_template', rows=rows)
 
 
+@route("/news/labeled")
+def labeled_news_list():
+    s = session()
+    rows = s.query(News).filter(News.label != None).all()
+    return template('news_template', rows=rows)
+
+
 @route("/add_label/")
 def add_label():
-
+    id, label = request.query.id, request.query.label
+    s = session()
+    article = s.query(News).filter(News.id == id).all()[0]
+    article.label = label
+    s.commit()
     redirect("/news")
 
 
@@ -25,7 +36,7 @@ def update_news():
     s = session()
     news_dict = get_news('https://news.ycombinator.com/')
     for data in news_dict:
-        if not s.query(News).filter(News.title == data['title']):
+        if s.query(News).filter(News.title == data['title']):
             break
         news = News(title=data['title'], author=data['author'], url=data['url'], comments=data['comments'],
                      points=data['points'])

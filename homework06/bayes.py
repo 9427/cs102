@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import log
 
 
 class NaiveBayesClassifier:
@@ -18,17 +19,17 @@ class NaiveBayesClassifier:
             freq[label, trait] /= classes[label]
         for c in classes:
             classes[c] /= len(y)
-        pass
+        self.predictor = classes, freq
 
-    def predict(self, X):
+    def predict(self, x):
         """ Perform classification on an array of test vectors X. """
         classes, prob = self.predictor
-        return min(classes.keys(),  # calculate argmin(-log(C|O))
+        return min(classes.keys(),
                    key=lambda cl: -log(classes[cl]) + \
-                                  sum(-log(prob.get((cl, feat), 10 ** (-7))) for feat in feats))
+                                  sum(-log(prob.get((cl, feat), 10 ** (-7))) for feat in str(x).split()))
         pass
 
-    def score(self, X_test, y_test):
+    def score(self, x_test, y_test):
         """ Returns the mean accuracy on the given test data and labels. """
         pass
 

@@ -13,7 +13,7 @@
                 <th>Author</th>
                 <th>#Likes</th>
                 <th>#Comments</th>
-                <th colspan="3">Label</th>
+                <th colspan="5">Label</th>
             </thead>
             <tbody>
                 %for row in rows:
@@ -33,7 +33,7 @@
             <tfoot class="full-width">
                 <tr>
                     <th colspan="7">
-                        <a href="/update" class="ui right floated small primary button">this button does its best to update the database&#13;&#10; it really doesn't want to disappoint you</a>
+                        <a href="/update" class="ui right floated small primary button">this button does its best to update the database, be gentle with it</a>
                     </th>
                 </tr>
             </tfoot>
