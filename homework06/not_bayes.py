@@ -2,6 +2,7 @@ from collections import defaultdict
 from math import log
 import csv
 import string
+import random
 
 
 class ProbablyNotBayesClassifier:
@@ -31,7 +32,6 @@ class ProbablyNotBayesClassifier:
                 val = round(val * 0.8)
                 if freq[label, trait]:
                     val *= log(freq[label, trait])
-            print(label, val)
             if foo:
                 foo = False
                 max_val = val
@@ -55,6 +55,14 @@ class ProbablyNotBayesClassifier:
         score = 0
         for current_X, current_Y in zip(x_test, y_test):
             if current_Y == 'ham':
+                score += 1
+        score /= len(x_test)
+        return score
+
+    def random_score(self, x_test, y_test):
+        score = 0
+        for current_y in y_test:
+            if current_y == random.randint(1, 5):
                 score += 1
         score /= len(x_test)
         return score

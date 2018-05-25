@@ -4,7 +4,7 @@ from bottle import (
 
 from scraputils import get_news
 from db import News, session
-from not_bayes import NaiveBayesClassifier
+from not_bayes import ProbablyNotBayesClassifier
 from not_bayes import clean
 
 
@@ -36,8 +36,12 @@ def add_label():
 def update_news():
     s = session()
     news_dict = get_news('https://news.ycombinator.com/')
+    i = 0
     for data in news_dict:
-        if s.query(News).filter(News.title == data['title']):
+        i += 1
+        if s.query(News).filter(News.title == data['title']) or i > 150:
+            print('boop')
+        if i > 150:
             break
         news = News(title=data['title'], author=data['author'], url=data['url'], comments=data['comments'],
                      points=data['points'])
@@ -49,21 +53,29 @@ def update_news():
 @route("/classify")
 def classify_news():
     s = session()
-    model = NaiveBayesClassifier()
-    x_train = s.query(News.title).filter(News.label != None).all()
-    x_train = [clean(x[0]) for x in x_train]
-    y_train = [int(y[0]) for y in s.query(News.label).filter(News.label != None).all()]
+    model = ProbablyNotBayesClassifier()
+    x_data = s.query(News.title).filter(News.label != None).all()
+    x_data = [clean(x[0]) for x in x_data]
+    print(x_data)
+    y_data = [int(y[0]) for y in s.query(News.label).filter(News.label != None).all()]
+    split_range = round(len(x_data) * 0.7)
+    print(split_range)
+    x_train, y_train, x_test, y_test = x_data[:split_range], y_data[:split_range], x_data[split_range:], y_data[split_range:]
+    #x_data = s.query(News).filter(News.label == None).all()
     model.train(x_train, y_train)
-    x_data = s.query(News).filter(News.label == None).all()
-    for data in x_data:
-        clean_data = clean(data.title)
-        data.label = model.predict(clean_data)
-    sorted_rows = []
-    for i in range(5, 0, -1):
-        for row in x_data:
-            if row.label == i:
-                sorted_rows.append(row)
-    return template('labeled_news_template', rows=sorted_rows)
+    #for data in x_test:
+    #    clean_data = clean(data.title)
+    #    data.label = model.predict(clean_data)
+    print(model.score(x_test, y_test))
+    print(model.random_score(x_test, y_test))
+    #sorted_rows = []
+    #for i in range(5, 0, -1):
+    #    for row in x_test:
+    #        if row.label == i:
+    #            sorted_rows.append(row)
+    #return template('labeled_news_template', rows=sorted_rows)
+    redirect("/news")
+
 
 if __name__ == "__main__":
     run(host="localhost", port=8080)
