@@ -5,7 +5,7 @@ import random
 
 class GameOfLife:
 
-    def __init__(self, width=640, height=480, cell_size=20, speed=2):
+    def __init__(self, width=640, height=480, cell_size=20, speed=1):
         self.width = width
         self.height = height
         self.cell_size = cell_size
@@ -83,21 +83,19 @@ class CellList:
         self.nrows = nrows
         self.ncols = ncols
         self.row = 0
-        self.col = -1
+        self.col = 0
         if randomize:
             self.grid = [[Cell(i, j, random.randint(0, 1)) for i in range(self.ncols)] for j in range(self.nrows)]
         else:
             self.grid = [[Cell(i, j, 0) for i in range(self.ncols)] for j in range(self.nrows)]
 
-    def get_neighbours(self, cell):
-        row = cell.row
-        col = cell.col
-        neighbours = []
+    def get_neighbours(self, row, col):
+        neighbours = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
-                if i or j:
-                    if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
-                        neighbours.append(self.grid[(row + i) % self.nrows][(col + j) % self.ncols])
+                if (0 <= row + i < self.nrows) and (0 <= col + j < self.ncols):
+                    if (self.grid[(row + i) % self.nrows][(col + j) % self.ncols].is_alive()) and (i or j):
+                        neighbours += 1
         return neighbours
 
     def update(self):
@@ -105,29 +103,25 @@ class CellList:
         for row in range(self.nrows):
             new_clist.append([])
             for col in range(self.ncols):
-                if ((1 < sum(c.state for c in self.get_neighbours(Cell(row, col))) < 4
-                     and self.grid[row][col].is_alive())
-                    or (sum(c.state for c in self.get_neighbours(Cell(row, col))) == 3
-                        and not self.grid[row][col].is_alive())):
+                if 1 < self.get_neighbours(row, col) < 4 and self.grid[row][col].is_alive():
+                    new_clist[row].append(Cell(row, col, 1))
+                elif self.get_neighbours(row, col) == 3 and not self.grid[row][col].is_alive():
                     new_clist[row].append(Cell(row, col, 1))
                 else:
                     new_clist[row].append(Cell(row, col, 0))
         self.grid = new_clist
-        return self
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.col == self.ncols-1:
-            self.col = -1
+        if self.col == self.ncols:
+            self.col = 0
             self.row += 1
         self.col += 1
         if self.row == self.nrows:
-            self.row = 0
-            self.col = -1
             raise StopIteration
-        return self.grid[self.row][self.col]
+        return self.grid[0][0]
 
     def __str__(self):
         s = ''
@@ -144,13 +138,14 @@ class CellList:
     def from_file(cls, filename):
         grid = []
         with open(filename) as file:
-            for j, line in enumerate(file):
-                grid.append([Cell(i, j, int(c)) for i, c in enumerate(line) if c != '\n'])
+            for i, line in enumerate(file):
+                grid.append([Cell(i, j, int(c))
+                             for j, c in enumerate(line) if c in {'0', '1'}])
         clist = cls(len(grid), len(grid[0]), False)
         clist.grid = grid
         return clist
 
 
 if __name__ == '__main__':
-    game = GameOfLife()
+    game = GameOfLife(640, 480, 20)
     game.run()
