@@ -102,4 +102,3 @@ if __name__ == '__main__':
     print('Score:', model.score(X_test, Y_test))
     print(test_score(X_test, Y_test))
     print(sklearn_score(X_train, Y_train, X_test, Y_test))
-

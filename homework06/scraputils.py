@@ -32,10 +32,9 @@ def extract_news(parser):
     return news_list
 
 
-def get_news(url, n_pages=1):
+def get_news(url):
     """ Collect news from a given web page """
     news = []
-    next_page = 'news?p=1'
     i = 1
     while True:
         print("Collecting data from page: {}".format(url))
@@ -49,6 +48,7 @@ def get_news(url, n_pages=1):
         url = "https://news.ycombinator.com/" + next_page
         news.extend(news_list)
     return news
+
 
 if __name__ == "__main__":
     print(get_news('https://news.ycombinator.com/'))
