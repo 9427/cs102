@@ -25,15 +25,19 @@
                     <td class="mark_1"><a href="/add_label/?label=1&id={{ row.id }}">1</a></td>
                     <td class="mark_2"><a href="/add_label/?label=2&id={{ row.id }}">2</a></td>
                     <td class="mark_3"><a href="/add_label/?label=3&id={{ row.id }}">3</a></td>
-                    <td class="mark_4"><a href="/add_label/?label=4&id={{ row.id }}">4</a></td>
-                    <td class="mark_5"><a href="/add_label/?label=5&id={{ row.id }}">5</a></td>
                 </tr>
                 %end
             </tbody>
             <tfoot class="full-width">
                 <tr>
-                    <th colspan="7">
-                        <a href="/update" class="ui right floated small primary button">this button does its best to update the database, be gentle with it</a>
+                    <th>
+                        <a href="/news" class="ui right floated small primary button">closed for renovations</a>
+                    </th>
+                    <th>
+                        <a href="/classify" class="ui right floated small primary button">run the non-bayes classifier</a>
+                    </th>
+                    <th>
+                        <a href="/classify/bayes" class="ui right floated small primary button">run the bayes classifier</a>
                     </th>
                 </tr>
             </tfoot>

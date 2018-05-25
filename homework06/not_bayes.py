@@ -50,7 +50,8 @@ class ProbablyNotBayesClassifier:
         score /= len(x_test)
         return score
 
-    def test_score(self, x_test, y_test):
+
+def test_score(x_test, y_test):
         """ Returns the accuracy of the model that always marks messages as ham"""
         score = 0
         for current_X, current_Y in zip(x_test, y_test):
@@ -59,13 +60,26 @@ class ProbablyNotBayesClassifier:
         score /= len(x_test)
         return score
 
-    def random_score(self, x_test, y_test):
+def random_score(x_test, y_test):
         score = 0
         for current_y in y_test:
-            if current_y == random.randint(1, 5):
+            if current_y == random.randint(1, 3):
                 score += 1
         score /= len(x_test)
         return score
+
+
+def sklearn_score(x_train, y_train, x_test, y_test):
+    from sklearn.naive_bayes import MultinomialNB
+    from sklearn.pipeline import Pipeline
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    model = Pipeline([
+        ('vectorizer', TfidfVectorizer()),
+        ('classifier', MultinomialNB(alpha=0.05)),
+    ])
+    model.fit(x_train, y_train)
+    return model.score(x_test, y_test)
 
 
 def clean(sentence):
@@ -86,5 +100,6 @@ if __name__ == '__main__':
     model.train(X_train, Y_train)
 
     print('Score:', model.score(X_test, Y_test))
-    print(model.test_score(X_test, Y_test))
+    print(test_score(X_test, Y_test))
+    print(sklearn_score(X_train, Y_train, X_test, Y_test))
 

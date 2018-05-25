@@ -28,8 +28,14 @@
             </tbody>
             <tfoot class="full-width">
                 <tr>
-                    <th colspan="7">
-                        <a href="/update" class="ui right floated small primary button">this button does its best to update the database, be gentle with it</a>
+                    <th>
+                        <a href="/news" class="ui right floated small primary button">closed for renovations</a>
+                    </th>
+                    <th>
+                        <a href="/classify" class="ui right floated small primary button">run the non-bayes classifier</a>
+                    </th>
+                    <th>
+                        <a href="/classify/bayes" class="ui right floated small primary button">run the bayes classifier</a>
                     </th>
                 </tr>
             </tfoot>
